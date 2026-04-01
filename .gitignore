@@ -14,5 +14,3 @@ node_modules/
 .env.local
 
 
-# generated files
-packages/scrolltube/README.md

@@ -21,7 +21,7 @@ export default function Home() {
 
             {/* Intro section */}
             <section style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                <h1>Welcome to ScrollTube 2.0</h1>
+                <h1>Welcome to ScrollTube</h1>
                 <p style={{ position: 'absolute', bottom: '10vh' }}>↓ SCROLL TO EXPLORE</p>
             </section>
 

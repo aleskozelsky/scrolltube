@@ -1,1 +1,1 @@
-@packages/scrolltube/AGENTS.md
+@AGENTS.md
