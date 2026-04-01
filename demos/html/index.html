@@ -107,7 +107,7 @@
 
     <!-- Vite will resolve this relative path to the typescript source automatically -->
     <script type="module">
-        import ScrollTube from '../../scrolltube/src/core/index.ts';
+        import ScrollTube from '../../src/core/index.ts'; // TODO: fix this path, ideally we should import from 'scrolltube', but it is throwing error
 
         document.addEventListener('DOMContentLoaded', async () => {
             console.log("Initializing ScrollTube...");
