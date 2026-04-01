@@ -58,9 +58,9 @@ const project = await pipeline.create({
 All you have to do now, is to drop the scrolltube.json project into your ScrollTubeProvider.
 
 #### Vanilla JS Integration
-For full implementation, please refer to the [Vanilla JS Example](https://github.com/aleskozelsky/scrolltube/blob/main/packages/examples/html/index.html).
+For full implementation, please refer to the [Vanilla JS Example](https://github.com/aleskozelsky/scrolltube/blob/main/demos/html/index.html).
 
-[Live Demo](https://example-html.scroll.tube) 
+[Live Demo](https://demo-html.scroll.tube) 
 
 ```html
 <!-- 2. Drop it into your HTML -->
@@ -75,9 +75,9 @@ For full implementation, please refer to the [Vanilla JS Example](https://github
 
 
 #### React Integration
-For full implementation, please refer to the [React Integration Example](https://github.com/aleskozelsky/scrolltube/blob/main/packages/examples/create-next-app/src/app/page.tsx).
+For full implementation, please refer to the [React Integration Example](https://github.com/aleskozelsky/scrolltube/blob/main/demos/create-next-app/src/app/page.tsx).
 
-[Live Demo](https://example-next.scroll.tube) 
+[Live Demo](https://demo-nextjs.scroll.tube) 
 
 
 ```tsx
@@ -133,7 +133,7 @@ Choose your path based on your role:
 - [**React Hooks**](https://docs.scroll.tube/react-integration): Build custom interactive components.
 
 ### 🤖 For AI Agents
-- [**AGENTS.md**](https://github.com/aleskozelsky/scrolltube/blob/main/packages/scrolltube/AGENTS.md): Technical standard operating procedures for the repository.
+- [**AGENTS.md**](https://github.com/aleskozelsky/scrolltube/blob/main/AGENTS.md): Technical standard operating procedures for the repository.
 - [**AI Integration Protocol**](https://docs.scroll.tube/ai-integration): How to prompt agents to build scenes for you.
 
 ---

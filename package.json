@@ -1,6 +1,6 @@
 {
   "name": "scrolltube",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "ScrollTube is a web-based tool for scroll-triggered animations.",
   "main": "dist/core/scrolltube.umd.min.js",
   "module": "dist/core/scrolltube.umd.min.js",

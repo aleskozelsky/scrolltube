@@ -1,4 +1,4 @@
-// Manual copy paste across 
+// Manual copy paste across public/private
 export default function Logo(props: React.SVGProps<SVGSVGElement>) { //https://lucide.dev/icons/hexagon
     return (
         <svg
