@@ -33,8 +33,7 @@
     "docs"
   ],
   "scripts": {
-    "build": "npm run sync-readme && npm run build:web && npm run build:pipeline",
-    "sync-readme": "node -e \"fs.copyFileSync('../../README.md', './README.md')\"",
+    "build": "npm run build:web && npm run build:pipeline",
     "build:web": "webpack --config webpack.config.js --mode production && npm run build:types:web",
     "build:types:web": "tsc --project tsconfig.json --emitDeclarationOnly",
     "build:pipeline": "tsc --project tsconfig.node.json && node scripts/make-executable.cjs",
