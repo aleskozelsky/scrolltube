@@ -1,0 +1,62 @@
+{
+  "version": "2.0.6",
+  "settings": {
+    "baseResolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "scrollMode": "vh"
+  },
+  "assets": [
+    {
+      "id": "main-sequence",
+      "strategy": "adaptive",
+      "variants": [
+        {
+          "id": "1080p_l",
+          "media": "(orientation: landscape)",
+          "width": 1920,
+          "height": 1080,
+          "orientation": "landscape",
+          "path": "./1080p_l",
+          "aspectRatio": "16:9",
+          "frameCount": 698,
+          "hasDepthMap": true,
+          "subjects": [
+            "main"
+          ]
+        },
+        {
+          "id": "1080p_p",
+          "media": "(orientation: portrait)",
+          "width": 1080,
+          "height": 1920,
+          "orientation": "portrait",
+          "path": "./1080p_p",
+          "aspectRatio": "9:16",
+          "frameCount": 698,
+          "hasDepthMap": true,
+          "subjects": [
+            "main"
+          ]
+        }
+      ]
+    }
+  ],
+  "timeline": {
+    "totalDuration": "300vh",
+    "scenes": [
+      {
+        "id": "scene-1",
+        "assetId": "main-sequence",
+        "startProgress": 0,
+        "duration": 1,
+        "assetRange": [
+          0,
+          697
+        ],
+        "layers": []
+      }
+    ]
+  }
+}

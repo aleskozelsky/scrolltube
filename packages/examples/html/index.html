@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollTube Vanilla JS Example</title>
+    <!-- Basic styling for the immersive container -->
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-color: #111;
+            color: white;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* The container determines how long the scroll effect lasts */
+        .stube-container {
+            position: relative;
+        }
+
+        /* The canvas inside is sticky to remain visible while scrolling the container */
+        .stube-container_inner_sticky {
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+        }
+
+        /* This div will act as our subject overlay, tracking coordinates */
+        #apple-overlay {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .outro {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stube-layer-tracking {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero">
+        <h1>Vanilla ScrollTube </h1>
+        <p>Scroll down to initialize the engine</p>
+    </div>
+
+    <!-- The Scroll Container -->
+    <div class="stube-container" style="height:400vh" data-stube-offset='["start end", "end start"]'>
+        <!-- The Sticky Viewport -->
+        <div class="stube-container_inner_sticky" style="height:100vh;width:100%">
+            <!-- Layer 1: The Canvas (Full Frame, no align) -->
+            <div class="stube-layer">
+                <div class="stube-canvas" style="width:100%; height:100%"
+                    data-stube-canvas="/example-apple-project/scrolltube.json" data-stube-depthtilt="0.3">
+                </div>
+            </div>
+
+            <!-- Overlay that will naturally lock to the 'main' subject -->
+            <div class="stube-layer-tracking" data-stube-layer-tracking="main">
+                <div id="apple-overlay" style="display: block">🍎 Apple Tracking</div>
+            </div>
+
+            <!-- Layer 3: Aligned UI -->
+            <div class="stube-layer" data-stube-align="bottom-left" style="padding: 10vh;">
+                <div data-stube-animate='{"opacity": [0, 1, 1, 0], "y": [40, 0, 0, -40]}'>
+                    <h1 style="font-size: 3rem; margin: 0;">Hello world</h1>
+                    <p style="opacity: 0.7;">This is now a fully functional Vanilla example!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="outro">
+        <h2>End of Sequence</h2>
+    </div>
+
+    <!-- Vite will resolve this relative path to the typescript source automatically -->
+    <script type="module">
+        import ScrollTube from '../../scrolltube/src/core/index.ts';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            console.log("Initializing ScrollTube...");
+
+            try {
+                const orchestrators = await ScrollTube.CoreOrchestrator.initAll();
+                console.log("ScrollTube Initialized!", orchestrators);
+            } catch (e) {
+                console.error("Failed to boot ScrollTube: ", e);
+            }
+        });
+    </script>
+</body>
+
+</html>

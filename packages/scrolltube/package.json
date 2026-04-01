@@ -1,0 +1,99 @@
+{
+  "name": "scrolltube",
+  "version": "2.0.15",
+  "description": "ScrollTube is a web-based tool for scroll-triggered animations.",
+  "main": "dist/core/scrolltube.umd.min.js",
+  "module": "dist/core/scrolltube.umd.min.js",
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/scrolltube.umd.min.js",
+      "require": "./dist/core/scrolltube.umd.min.js"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.js"
+    },
+    "./pipeline": {
+      "types": "./dist/pipeline/index.d.ts",
+      "import": "./dist/pipeline/index.js",
+      "require": "./dist/pipeline/index.js"
+    }
+  },
+  "types": "dist/core/index.d.ts",
+  "bin": {
+    "stube": "dist/cli/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    "docs"
+  ],
+  "scripts": {
+    "build": "npm run sync-readme && npm run build:web && npm run build:pipeline",
+    "sync-readme": "node -e \"fs.copyFileSync('../../README.md', './README.md')\"",
+    "build:web": "webpack --config webpack.config.js --mode production && npm run build:types:web",
+    "build:types:web": "tsc --project tsconfig.json --emitDeclarationOnly",
+    "build:pipeline": "tsc --project tsconfig.node.json && node scripts/make-executable.cjs",
+    "prepublishOnly": "npm run build",
+    "dev": "concurrently -n WEB,NODE,TYPES -c \"blue,yellow,green\" \"npm:dev:web\" \"npm:dev:node\" \"npm:dev:types\"",
+    "dev:web": "webpack --config webpack.config.js --mode development --watch",
+    "dev:node": "tsc --project tsconfig.node.json --watch --preserveWatchOutput",
+    "dev:types": "tsc --project tsconfig.json --watch --emitDeclarationOnly"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0"
+  },
+  "dependencies": {
+    "@fal-ai/client": "^1.9.4",
+    "@ffmpeg/ffmpeg": "^0.12.15",
+    "@ffmpeg/util": "^0.12.2",
+    "chalk": "^4.1.2",
+    "commander": "^11.1.0",
+    "dotenv": "^17.3.1",
+    "ffmpeg-static": "^5.3.0",
+    "fs-extra": "^11.3.4",
+    "jszip": "^3.10.1",
+    "motion": "^12.36.0",
+    "sharp": "^0.34.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aleskozelsky/scrolltube.git"
+  },
+  "keywords": [
+    "scroll",
+    "animation",
+    "video",
+    "image",
+    "sequence"
+  ],
+  "author": "Ales Kozelsky",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aleskozelsky/scrolltube/issues"
+  },
+  "homepage": "https://github.com/aleskozelsky/scrolltube#readme",
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.28",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "chalk": "^4.1.2",
+    "clean-webpack-plugin": "^4.0.0",
+    "concurrently": "^8.2.0",
+    "css-loader": "^6.8.0",
+    "style-loader": "^3.3.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.3.0",
+    "webpack": "^5.90.0",
+    "webpack-cli": "^5.1.0",
+    "@types/fs-extra": "^11.0.4",
+    "@types/sharp": "^0.31.1"
+  }
+}

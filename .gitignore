@@ -1,0 +1,18 @@
+
+# node modules
+node_modules/
+.node_modules/
+
+
+# dist 
+**/dist/
+.dist/
+
+
+# env
+.env
+.env.local
+
+
+# generated files
+packages/scrolltube/README.md

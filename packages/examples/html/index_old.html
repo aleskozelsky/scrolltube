@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScrollTube Vanilla JS Example</title>
+    <!-- Basic styling for the immersive container -->
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background-color: #111;
+            color: white;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* The container determines how long the scroll effect lasts */
+        #stube-container {
+            position: relative;
+            height: 400vh;
+        }
+
+        /* The canvas inside is sticky to remain visible while scrolling the container */
+        #stube-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* This div will act as our subject overlay, tracking coordinates */
+        #apple-overlay {
+            position: absolute;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            white-space: nowrap;
+            /* Transform handles centering around the coordinate point */
+            transform: translate(-50%, -50%);
+            /* Smoothing CSS for positioning - should be somehow related to scrub value */
+            transition: left 0.05s linear, top 0.05s linear;
+            z-index: 10;
+            display: none;
+            /* hidden until tracking data is ready */
+        }
+
+        .outro {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="hero">
+        <h1>Vanilla ScrollTube </h1>
+        <p>Scroll down to initialize the engine</p>
+    </div>
+
+    <!-- The Scroll Container -->
+    <div id="stube-container">
+
+        <!-- The Sticky Viewport -->
+        <div id="stube-sticky">
+            <!-- Overlay that will naturally lock to the 'main' subject -->
+            <div id="apple-overlay">🍎 Apple Tracking</div>
+
+            <!-- CoreEngine will dynamically inject the <canvas> here -->
+        </div>
+
+    </div>
+
+    <div class="outro">
+        <h2>End of Sequence</h2>
+    </div>
+
+    <!-- Vite will resolve this relative path to the library automatically -->
+
+    <!-- Import Motion for Scroll Tracking (Lightweight vanilla) -->
+    <!-- (Normally you'd import 'motion' via npm/ESM, but we'll use a cdn or a simple intersection observer fallback if not present. 
+         For this demo, let's write a small native tracker or use the CDN version) -->
+    <script type="module">
+        import ScrollTube from '../../scrolltube/src/core/index.ts';
+        import { scroll } from 'https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm';
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const container = document.getElementById('stube-container');
+            const stickyBox = document.getElementById('stube-sticky');
+            const overlay = document.getElementById('apple-overlay');
+
+            try {
+                // Initialize ScrollTube Core Engine using the dynamic static helper
+                // This fetches the JSON and auto-injects an adaptive <canvas> into 'stickyBox'
+                // We pas { scrub: 0.1 } for smooth interpolation
+                const engine = await ScrollTube.init(stickyBox, './stube-project-apple/scrolltube.json');
+                engine.scrub = 0.1;
+
+                console.log("ScrollTube Initialized!", engine);
+
+                // Option: Request Subject Tracking
+                await engine.loadTrackingData('main');
+                overlay.style.display = 'block';
+
+                // Hook up the vanilla motion framework to map scroll to our engine's progress
+                scroll(
+                    (progress) => {
+                        // Forward progress to the engine via custom scrub looping
+                        engine.update(progress);
+                    },
+                    {
+                        target: container,
+                        offset: ['start end', 'end start'] // Standard container interception points
+                    }
+                );
+
+                // Update UI frame overlays by hooking to render pass
+                engine.onFrameChange = (frame, progress) => {
+                    const coords = engine.getTrackedCoords('main', frame);
+
+                    // Update tracked DIV position
+                    // Remember coordinates are 0 - 1 values based on the 100vh sticky box
+                    overlay.style.left = `${coords.x * 100}%`;
+                    overlay.style.top = `${coords.y * 100}%`;
+                };
+
+                // Example: How to clean up later if destroying
+                // engine.destroy(); // unmounts observers, frees WebGL contexts
+
+            } catch (err) {
+                console.error("Failed to load ScrollTube", err);
+            }
+
+        });
+    </script>
+</body>
+
+</html>

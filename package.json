@@ -1,0 +1,15 @@
+{
+    "name": "scrolltube-workspace",
+    "private": true,
+    "description": "Monorepo workspace for ScrollTube development.",
+    "workspaces": [
+        "packages/docs",
+        "packages/examples/*",
+        "packages/scrolltube"
+    ],
+    "scripts": {
+        "build": "npm run build -w scrolltube",
+        "dev": "npm run dev -w scrolltube",
+        "test": "npm test --workspaces"
+    }
+}
