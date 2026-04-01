@@ -1,6 +1,8 @@
 import { ProjectConfiguration, SequenceAsset, AssetVariant, SubjectFrameData } from './types';
 import { WebGLRenderer } from './WebGLRenderer';
 
+console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
+
 /**
  * SCROLLTUBE CORE ENGINE
  * 
