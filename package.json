@@ -97,6 +97,7 @@
     "@types/sharp": "^0.31.1"
   },
   "workspaces": [
+    "apps/nextjs-docs",
     "demos/*"
   ]
 }
