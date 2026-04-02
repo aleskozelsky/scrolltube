@@ -18,11 +18,16 @@ This means you have a single source of truth for your processing logic, while be
 
 ## 2. CLI Usage
 
-The `npx stube create` command is the primary wrapper for the pipeline on your local machine.
+The `npx scrolltube create` command is the primary wrapper for the pipeline on your local machine.
+
  
  ```bash
- npx stube create <input> [options]
+ npx scrolltube create <input> [options]
  ```
+ 
+-> [!TIP]
+-> **Interactive Mode**: If you omit the input path or provide an invalid one, the CLI will now prompt you to try again instead of exiting.
+
  
  ### Options:
  - `-n, --name <string>`: Project folder name.
@@ -56,14 +61,16 @@ const zip = await pipeline.create({
 ```
 
 ### Core Pipeline Steps:
- 1.  **Auto-Upload**: If you provide a local `.mp4`, it's automatically uploaded to the cloud for processing.
- 2.  **Extraction**: Converts video files into high-quality image sequences.
+ 1.  **Source Preservation**: Automatically saves a copy of your original video as `video-source.[ext]` in the project directory for future-proofing.
+ 2.  **Extraction**: Converts video files into high-quality image sequences (with minimal terminal noise).
  3.  **AI Tracking**: Identifies the main subject (using **SAM 3**). Our engine now features **Sticky Tracking**—if the subject is obscured for a few frames, the coordinates hold their last known position.
- 4.  **Variant Generation**: 
+ 4.  **Upscale Protection**: Automatically detects source dimensions and filters out any requested variants that would require upscaling, ensuring maximum performance and visual quality.
+ 5.  **Variant Generation**: 
      - **Smart Crop**: Centers the images based on the tracked subject.
      - **Resolution Factory**: Creates Portrait (9:16) and Landscape (16:9) pairs for each target resolution (e.g. 720p, 1080p).
     - **Compression**: Optimized `.webp` generation via Sharp (Node) or Canvas (Browser).
- 5.  **Metadata Export**: Generates the final `scrolltube.json` with **root-relative paths** for easier deployment.
+ 6.  **Metadata Export**: Generates the final `scrolltube.json` with **root-relative paths** and source file references.
+
  
  ---
  

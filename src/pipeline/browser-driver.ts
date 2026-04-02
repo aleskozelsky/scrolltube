@@ -53,13 +53,44 @@ export class BrowserDriver implements IPipelineDriver {
     }
   }
 
+  async copyFile(src: string, dest: string): Promise<void> {
+    const data = await this.readFile(src);
+    await this.writeFile(dest, data);
+  }
+
+
   join(...parts: string[]): string {
     return parts.join('/').replace(/\/+/g, '/');
+  }
+
+  async getVideoDimensions(input: string | File | Blob): Promise<{ width: number, height: number }> {
+    return new Promise((resolve, reject) => {
+      let url: string;
+      if (typeof input === 'string') {
+        // Fallback for paths if they represent URLs in browser
+        url = input;
+      } else {
+        url = URL.createObjectURL(input);
+      }
+
+      const video = document.createElement('video');
+      video.onloadedmetadata = () => {
+        const dimensions = { width: video.videoWidth, height: video.videoHeight };
+        if (typeof input !== 'string') URL.revokeObjectURL(url);
+        resolve(dimensions);
+      };
+      video.onerror = (e) => {
+        if (typeof input !== 'string') URL.revokeObjectURL(url);
+        reject(new Error('Failed to load video metadata in browser.'));
+      };
+      video.src = url;
+    });
   }
 
   resolve(...parts: string[]): string {
     return this.join(...parts);
   }
+
 
   /**
    * EXTRACT FRAMES (via ffmpeg.wasm)
@@ -88,7 +119,8 @@ export class BrowserDriver implements IPipelineDriver {
       await ffmpeg.writeFile(inputName, await fetchFile(videoSource));
 
       // Extract as PNGs/WebPs (WebP might be faster if supported in the WASM build)
-      await ffmpeg.exec(['-i', inputName, `${outputDir}/frame_%04d.png`]);
+      await ffmpeg.exec(['-hide_banner', '-loglevel', 'error', '-i', inputName, `${outputDir}/frame_%04d.png`]);
+
 
       // Move files from FFmpeg VFS to our Map FS
       const files = await ffmpeg.listDir(outputDir);

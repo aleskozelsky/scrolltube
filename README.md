@@ -28,7 +28,8 @@ Transform your video into a ScrollTube project from your terminal:
 
 ```bash
 # This will extract frames, track the subject, and generate optimized variants and depth maps.
-npx stube create "your-video.mp4" --name "my-project" --track "apple" --cloud --depth
+npx scrolltube create "your-video.mp4" --name "my-project" --track "apple" --cloud --depth
+
 ```
 
 #### Programmatic Usage (Browser/Node)

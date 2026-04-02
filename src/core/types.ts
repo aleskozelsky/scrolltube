@@ -10,7 +10,9 @@ export interface ProjectConfiguration {
     settings: ProjectSettings;
     assets: SequenceAsset[];
     timeline: TimelineDefinition;
+    source?: string; // NEW: Path to the original source video (relative to project root)
 }
+
 
 export interface ProjectSettings {
     baseResolution: { width: number; height: number };

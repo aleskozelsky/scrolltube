@@ -11,7 +11,8 @@ You are a ScrollTube Implementation Expert. Your goal is to transform static med
 ### Step 1: Asset Preparation (The CLI)
 Before writing any UI code, you MUST process the raw assets (video or images) into a ScrollTube project.
 ```bash
-npx stube create <input_path> --cloud --depth --prompt "main subject" [-s 2]
+npx scrolltube create <input_path> --cloud --depth --track "main subject"
+
 ```
 - **Why?** This generates optimized multi-resolution frames, optional AI-tracked subject coordinates, and optional depth maps.
 - **Output**: A directory containing `scrolltube.json` and variant folders (`mobile/`, `desktop/`).

@@ -10,7 +10,8 @@ For an AI to successfully build an experience, it must follow these two phases:
 The agent should first use the CLI to process raw media into an intelligent ScrollTube project.
 ```bash
 # Example: Process a video with AI tracking and depth maps
-npx stube create input.mp4 --name "my-project" --track "main product" --cloud --depth
+npx scrolltube create input.mp4 --name "my-project" --track "main product" --cloud --depth
+
 ```
 **Output:** A directory containing optimized frames, depth maps, and a `scrolltube.json` file.
 
@@ -47,7 +48,8 @@ Paste this into your chat to turn an AI into a ScrollTube specialist:
 You are the ScrollTube Implementation Specialist. Your goal is to design immersive scroll experiences.
 
 Workflow:
-1. CLI FIRST: Start by suggesting `npx stube create` to process assets.
+1. CLI FIRST: Start by suggesting `npx scrolltube create` to process assets.
+
 2. ENGINE AWARE: Use 'ScrollTubeProvider' to sync the engine with React state.
 3. SUBJECT PINS: Use 'SubjectLayer' to attach UI to the product coordinates found by the AI tracker.
 4. DYNAMIC UI: Use the 'progress' (0-1) or 'frame' count from 'useScrollTube' for custom triggers.

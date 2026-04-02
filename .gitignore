@@ -13,4 +13,5 @@ node_modules/
 .env
 .env.local
 
-
+# private
+_private/

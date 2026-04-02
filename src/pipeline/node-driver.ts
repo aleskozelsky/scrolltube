@@ -39,6 +39,11 @@ export class NodeDriver implements IPipelineDriver {
   async remove(filePath: string): Promise<void> {
     await fs.remove(filePath);
   }
+  
+  async copyFile(src: string, dest: string): Promise<void> {
+    await fs.copy(src, dest);
+  }
+
 
   join(...parts: string[]): string {
     return path.join(...parts);
@@ -48,13 +53,38 @@ export class NodeDriver implements IPipelineDriver {
     return path.resolve(...parts);
   }
 
+  async getVideoDimensions(input: string): Promise<{ width: number, height: number }> {
+    return new Promise((resolve, reject) => {
+      try {
+        const result = execSync(`"${this.ffmpegPath}" -i "${input}"`, { stdio: 'pipe' }).toString();
+        // ffmpeg outputs info to stderr, which execSync might throw on if -i is used without an output file
+        this.parseDimensions(result, resolve, reject);
+      } catch (err: any) {
+        // execSync throws if exit code != 0, but ffmpeg -i returns 1 because no output file 
+        const output = err.stderr ? err.stderr.toString() : (err.stdout ? err.stdout.toString() : '');
+        this.parseDimensions(output, resolve, reject);
+      }
+    });
+  }
+
+  private parseDimensions(output: string, resolve: any, reject: any) {
+    const match = output.match(/, (\d{2,5})x(\d{2,5})/);
+    if (match) {
+      resolve({ width: parseInt(match[1]), height: parseInt(match[2]) });
+    } else {
+      reject(new Error('Could not parse video dimensions.'));
+    }
+  }
+
   async extractFrames(videoSource: string, outputDir: string, onProgress?: (percent: number) => void): Promise<void> {
+
     return new Promise((resolve, reject) => {
       // For simplicity, we use execSync in a promise or spawn for progress
       try {
         // ffmpeg -i input output%04d.png
         // For now, let's keep it simple like existing CLI
-        execSync(`"${this.ffmpegPath}" -i "${videoSource}" "${outputDir}/frame_%04d.png"`, { stdio: 'inherit' });
+        execSync(`"${this.ffmpegPath}" -hide_banner -loglevel error -i "${videoSource}" "${outputDir}/frame_%04d.png"`, { stdio: 'inherit' });
+
         resolve();
       } catch (err) {
         reject(err);

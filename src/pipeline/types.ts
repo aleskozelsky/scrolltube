@@ -23,13 +23,17 @@ export interface IPipelineDriver {
   exists(path: string): Promise<boolean>;
   readdir(path: string): Promise<string[]>;
   remove(path: string): Promise<void>;
+  copyFile(src: string, dest: string): Promise<void>;
+
   
   // Path helpers
   join(...parts: string[]): string;
   resolve(...parts: string[]): string;
 
   // Media Processing
+  getVideoDimensions(input: string | File | Blob): Promise<{ width: number, height: number }>;
   extractFrames(videoSource: string | File | Blob, outputDir: string, onProgress?: (percent: number) => void): Promise<void>;
+
   processImage(input: Uint8Array | string, config: VariantConfig, options: { grayscale?: boolean, blur?: number }): Promise<Uint8Array>;
   
   // Optional for ZIP support

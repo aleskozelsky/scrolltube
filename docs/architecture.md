@@ -15,6 +15,8 @@ The engine expects a `ProjectConfiguration` object (defined in `src/core/types.t
 - **`settings`**: Base resolutions, scroll modes, and base path.
 - **`assets`**: An array of `SequenceAsset` with multiple `variants` (Mobile vs Desktop).
 - **`timeline`**: A map of `scenes` and `layers`.
+- **`source`**: (New) Relative path to the original source video file, preserved for future edits or variant regenerations.
+
 
 ---
 

@@ -67,6 +67,71 @@ export class AssetPipeline {
     await this.driver.mkdir(framesDir);
     await this.driver.mkdir(depthsDir);
 
+    // 0. PRE-FLIGHT: DIMENSIONS & VARIANT FILTERING
+    this.report('initializing', 5, 'Detecting source dimensions...');
+    let sourceDimensions = { width: 1920, height: 1080 }; // Default fallback
+    try {
+      sourceDimensions = await this.driver.getVideoDimensions(input);
+      console.log(chalk.cyan(`🎞️  Source Resolution: ${sourceDimensions.width}x${sourceDimensions.height}`));
+    } catch (e) {
+      console.warn(chalk.yellow(`⚠️  Could not detect source dimensions. Proceeding with defaults.`));
+    }
+
+    const requestedVariants = this.normalizeVariants(opts.variants);
+    const validVariants = requestedVariants.filter(v => {
+      const isTooLarge = v.width > sourceDimensions.width || v.height > sourceDimensions.height;
+      if (isTooLarge) {
+        console.warn(chalk.yellow(`⚠️  Skipping variant ${v.id} (${v.width}x${v.height}) as it exceeds source resolution. (Upscaling is disabled)`));
+        return false;
+      }
+      return true;
+    });
+
+    if (validVariants.length === 0 && requestedVariants.length > 0) {
+      console.warn(chalk.bold.red(`\n❌ All requested variants were too large for the source video!`));
+      console.log(chalk.white(`Hint: Upscale your video first, or request smaller variants.\n`));
+      // Re-add at least one matching the source? No, let's let the user decide or use a safe fallback.
+      // For now, let's use the source resolution as a single variant if everything else failed.
+      const sourceVariant = {
+        id: 'source-res', 
+        width: sourceDimensions.width, 
+        height: sourceDimensions.height,
+        orientation: sourceDimensions.width > sourceDimensions.height ? 'landscape' : 'portrait' as any,
+        aspectRatio: `${sourceDimensions.width}:${sourceDimensions.height}`,
+        media: '(min-width: 0px)'
+      };
+      validVariants.push(sourceVariant);
+      console.log(chalk.blue(`ℹ️  Falling back to source resolution variant: ${sourceDimensions.width}x${sourceDimensions.height}`));
+    }
+
+
+    // 0. SAVE SOURCE (Copy input video to the project directory)
+    let sourceRelPath = '';
+    try {
+      let sourceFileName = 'video-source';
+      let extension = '.mp4';
+
+      if (typeof input === 'string') {
+        const parts = input.split('.');
+        if (parts.length > 1) extension = `.${parts.pop()}`;
+        sourceFileName += extension;
+        await this.driver.copyFile(input, this.driver.join(outDir, sourceFileName));
+        sourceRelPath = `./${sourceFileName}`;
+      } else if (input && (input as any).arrayBuffer) {
+        // Handle File/Blob (Browser)
+        const fileName = (input as any).name || 'source.mp4';
+        const parts = fileName.split('.');
+        if (parts.length > 1) extension = `.${parts.pop()}`;
+        sourceFileName += extension;
+        const buffer = await (input as any).arrayBuffer();
+        await this.driver.writeFile(this.driver.join(outDir, sourceFileName), new Uint8Array(buffer));
+        sourceRelPath = `./${sourceFileName}`;
+      }
+    } catch (e) {
+      console.warn(chalk.yellow(`⚠️  Could not save a local copy of source video: ${e instanceof Error ? e.message : String(e)}`));
+    }
+
+
     // 1. FRAME EXTRACTION
     this.report('extracting', 10, 'Extracting frames from source...');
     await this.driver.extractFrames(input, framesDir);
@@ -105,13 +170,15 @@ export class AssetPipeline {
     const variants = await this.processVariants(tempDir, trackingData, {
       step,
       depth: isDepthActive,
-      variants: this.normalizeVariants(opts.variants),
+      variants: validVariants,
       outDir
     });
 
+
     // 4. SAVE CONFIG
     this.report('saving', 90, 'Finalizing project configuration...');
-    const config = await this.saveConfig(variants, outDir);
+    const config = await this.saveConfig(variants, outDir, sourceRelPath);
+
 
     // Cleanup
     await this.driver.remove(tempDir);
@@ -203,7 +270,7 @@ export class AssetPipeline {
     return assetVariants;
   }
 
-  async saveConfig(variants: AssetVariant[], outDir: string): Promise<ProjectConfiguration> {
+  async saveConfig(variants: AssetVariant[], outDir: string, sourcePath?: string): Promise<ProjectConfiguration> {
     const pkg = require('../../package.json');
     const config: ProjectConfiguration = {
       version: pkg.version,
@@ -213,12 +280,17 @@ export class AssetPipeline {
         totalDuration: "300vh",
         scenes: [{
           id: "scene-1", assetId: "main-sequence", startProgress: 0, duration: 1,
-          assetRange: [0, variants[0].frameCount - 1], layers: []
+          assetRange: [0, (variants.length > 0 ? variants[0].frameCount : 1) - 1], layers: []
         }]
       }
     };
+
+    if (sourcePath) {
+      config.source = sourcePath;
+    }
 
     await this.driver.writeFile(this.driver.join(outDir, 'scrolltube.json'), JSON.stringify(config, null, 2));
     return config;
   }
 }
+
