@@ -4,7 +4,7 @@
 
 ScrollTube is a modern animation SDK built for the era of high-performance, agent-driven development. It allows you to transform standard video or images into web assets that precisely track subjects and depth.
 
-[scroll.tube](https://www.scroll.tube)
+[www.scroll.tube](https://www.scroll.tube)
 
 ---
 
@@ -59,7 +59,6 @@ const project = await pipeline.create({
 All you have to do now, is to drop the scrolltube.json project into your ScrollTubeProvider.
 
 #### Vanilla JS Integration
-For full implementation, please refer to the [Vanilla JS Example](https://github.com/aleskozelsky/scrolltube/blob/main/demos/html/index.html).
 
 [Live Demo](https://demo-html.scroll.tube) 
 
@@ -74,9 +73,9 @@ For full implementation, please refer to the [Vanilla JS Example](https://github
 </script>
 ```
 
+For full implementation, please refer to the [Vanilla JS Example](https://github.com/aleskozelsky/scrolltube/blob/main/demos/html/index.html).
 
 #### React Integration
-For full implementation, please refer to the [React Integration Example](https://github.com/aleskozelsky/scrolltube/blob/main/demos/create-next-app/src/app/page.tsx).
 
 [Live Demo](https://demo-nextjs.scroll.tube) 
 
@@ -121,6 +120,8 @@ const AppleInfo = () => {
 
 
 ```
+
+For full implementation, please refer to the [React Integration Example](https://github.com/aleskozelsky/scrolltube/blob/main/demos/create-next-app/src/app/page.tsx).
 
 ---
 

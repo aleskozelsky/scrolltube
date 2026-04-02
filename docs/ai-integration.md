@@ -13,7 +13,7 @@ The agent should first use the CLI to process raw media into an intelligent Scro
 npx scrolltube create input.mp4 --name "my-project" --track "main product" --cloud --depth
 
 ```
-**Output:** A directory containing optimized frames, depth maps, and a `scrolltube.json` file.
+**Output:** A directory containing optimized frames, depth maps in variants for specific resolutions and a `scrolltube.json` file and a copy of the source - raw media.
 
 ### Phase B: Immersive Implementation (React)
 The agent then uses the generated JSON to build the UI components.
@@ -31,7 +31,7 @@ export const MyExperience = () => (
         {/* Pins content to the tracked subject automatically */}
         <SubjectLayer offset={{ x: 10, y: -5 }}>
           <div className="info-box">
-             Premium Tubesmanship
+            Hello From ScrollTube
           </div>
         </SubjectLayer>
       </div>
@@ -70,5 +70,11 @@ This workflow enables a powerful business model:
 1. **The CLI** handles the "hard" computer vision (tracking, depth, optimization).
 2. **The JSON** stores this intelligence.
 3. **The AI Agent** uses that intelligence to write the perfectly synced creative layer.
+
+You provide the **SDK**, the AI provides the **Implementation**.
+yer.
+
+You provide the **SDK**, the AI provides the **Implementation**.
+yer.
 
 You provide the **SDK**, the AI provides the **Implementation**.
