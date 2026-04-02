@@ -36,7 +36,9 @@ The `npx scrolltube create` command is the primary wrapper for the pipeline on y
  - `-s, --step <number>`: Process every Nth frame. **VITAL for performance**.
  - `--cloud`: Use Fal.ai for tracking (requires `FAL_KEY`).
  - `--depth`: Generate a corresponding image sequence of depth maps for the 3D parallax effect.
+ - `--zip`: Bundle the entire project into a `.zip` file immediately after creation.
  
+
 
 ---
 
@@ -93,6 +95,7 @@ The pipeline is split into a **Local Implementation** path and a **Cloud-Acceler
 ### 🏠 NodeDriver
 - **Extraction**: Native FFmpeg binary.
 - **Image Engine**: **Sharp** (C++).
+- **Bundling**: **jszip**.
 
 ### 🌐 BrowserDriver
 - **Extraction**: **ffmpeg.wasm**.

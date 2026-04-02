@@ -128,8 +128,9 @@ program
   .option('-s, --step <number>', 'Process every Nth frame (default: 1)', '1')
   .option('--cloud', 'Use Fal.ai for tracking and refinement')
   .option('--depth', 'Generate a 3D depth map for the displacement effect (Requires --cloud)')
+  .option('--zip', 'Bundle project as a .zip file after creation')
 
-  .action(async (inputArg: string | undefined, opts: { output?: string, track: string, cloud: boolean, step: string, depth: boolean, name?: string, variants?: string }) => {
+  .action(async (inputArg: string | undefined, opts: { output?: string, track: string, cloud: boolean, step: string, depth: boolean, name?: string, variants?: string, zip: boolean }) => {
     console.log(chalk.bold.blue('\n🎞️  ScrollTube Asset Pipeline\n'));
 
     // 0. PRE-FLIGHT CHECK
@@ -215,18 +216,24 @@ program
     });
 
     try {
-      await pipeline.create({
+      const result = await pipeline.create({
         input: input,
         name: projectName,
         track: useTracking ? track : undefined,
         depth: useDepth,
         variants: customVariants || [720, 1080],
-        step: step
+        step: step,
+        outputZip: opts.zip
       });
 
-      console.log(chalk.bold.green(`\n✅ Project Created Successfully!`));
+      if (opts.zip && result instanceof Uint8Array) {
+        const zipFile = `${projectName}.zip`;
+        await fs.writeFile(zipFile, result);
+        console.log(chalk.white(`📦 Project zipped: ${zipFile}`));
+      }
       console.log(chalk.white(`📍 Output: ${projectName}`));
       console.log(chalk.white(`📜 Config: scrolltube.json`));
+      console.log(chalk.bold.green(`\n✅ Project Created Successfully!`));
       console.log(chalk.cyan(`\nNext: Import the .json into your <ScrollTubeCanvas project={...} />\n`));
 
     } catch (err: any) {

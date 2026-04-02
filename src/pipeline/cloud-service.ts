@@ -59,6 +59,12 @@ export class CloudService {
         prompt: prompt,
       },
       logs: true,
+      onQueueUpdate: (update) => {
+
+        // if (update.status === "IN_PROGRESS") {
+        //   update.logs.forEach(l => console.log(`⏳ AI Tracking: ${l.message}`));
+        // }
+      }
     });
 
     const payload = result.data || result;
@@ -91,7 +97,12 @@ export class CloudService {
         video_url: videoUrl,
         model_size: "VDA-Base",
       },
-      logs: true
+      logs: true,
+      onQueueUpdate: (update) => {
+        // if (update.status === "IN_PROGRESS") {
+        //   update.logs.forEach(l => console.log(`⏳ AI Depth Map: ${l.message}`));
+        // }
+      }
     });
 
     const payload = result.data || result;

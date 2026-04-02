@@ -109,4 +109,32 @@ export class NodeDriver implements IPipelineDriver {
 
     return await pipeline.webp({ quality: 80 }).toBuffer();
   }
+
+  async zipProject(outDir: string): Promise<Uint8Array> {
+    const JSZip = require('jszip');
+    const zip = new JSZip();
+
+    const addFilesRecursively = async (currentDir: string, zipFolder: any) => {
+      const files = await fs.readdir(currentDir);
+      for (const file of files) {
+        const fullPath = path.join(currentDir, file);
+        const stats = await fs.stat(fullPath);
+        if (stats.isDirectory()) {
+          const folder = zipFolder.folder(file);
+          await addFilesRecursively(fullPath, folder);
+        } else {
+          const content = await fs.readFile(fullPath);
+          zipFolder.file(file, content);
+        }
+      }
+    };
+
+    await addFilesRecursively(outDir, zip);
+    const content = await zip.generateAsync({ type: 'nodebuffer' });
+    
+    // Also save it locally for Node (optional but helpful?)
+    // No, IPipelineDriver contract says return Uint8Array.
+    // The caller (AssetPipeline) handles what to do with it.
+    return new Uint8Array(content);
+  }
 }
