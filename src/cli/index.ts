@@ -122,12 +122,13 @@ program
   .description('ONE-STEP: Transform video/images into a responsive ScrollTube')
   .argument('[input]', 'Path to input video or directory of images')
   .option('-o, --output <dir>', 'Output directory (deprecated, use --name)')
-  .option('-p, --track <text>', 'Text prompt for subject tracking', 'main subject')
+  .option('-p, --track <text>', 'Text prompt for subject tracking')
   .option('-n, --name <string>', 'Name of the project')
   .option('-v, --variants <string>', 'Comma-separated target resolutions (e.g. 720,1080)')
   .option('-s, --step <number>', 'Process every Nth frame (default: 1)', '1')
-  .option('--cloud', 'Use Fal.ai for tracking and refinement', false)
-  .option('--depth', 'Generate a 3D depth map for the displacement effect (Requires --cloud)', false)
+  .option('--cloud', 'Use Fal.ai for tracking and refinement')
+  .option('--depth', 'Generate a 3D depth map for the displacement effect (Requires --cloud)')
+
   .action(async (inputArg: string | undefined, opts: { output?: string, track: string, cloud: boolean, step: string, depth: boolean, name?: string, variants?: string }) => {
     console.log(chalk.bold.blue('\n🎞️  ScrollTube Asset Pipeline\n'));
 
@@ -157,6 +158,7 @@ program
     }
 
 
+
     // 2. PROJECT NAME & SETTINGS
     if (!projectName) {
       projectName = await prompt('Project name', 'scrolltube-project');
@@ -166,13 +168,47 @@ program
     if (!inputArg) {
       const stepInput = await prompt('Process every Nth frame (Step size)', '1');
       step = parseInt(stepInput) || 1;
+
+      // New Interactive Prompts
+      const trackSubject = await prompt(`Track a specific subject? ${chalk.dim('(Optional, AI requires key - e.g. "red car")')}`, '');
+      if (trackSubject) {
+        track = trackSubject;
+        useTracking = true;
+      }
+
+      const wantDepth = await prompt(`Generate 3D depth maps? ${chalk.dim('(Optional, AI requires key)')} [y/N]`, 'n');
+      if (wantDepth.toLowerCase() === 'y') {
+        useDepth = true;
+      }
     }
 
-    // AI Tracking logic preserved in CLI wrapper...
-    // ...
+    // 3. KEY & AI VALIDATION
+    const stubeKey = process.env.SCROLLTUBE_KEY;
+    const falKey = process.env.FAL_KEY;
+    const hasKey = !!(stubeKey || falKey);
+
+    if ((useTracking || useDepth) && !hasKey) {
+      console.log(chalk.yellow(`\n⚠️  The AI features you selected (${[useTracking ? 'Tracking' : '', useDepth ? 'Depth' : ''].filter(Boolean).join('/')}) require a Cloud Key.`));
+      console.log(chalk.white('To enable these features, please:'));
+      console.log(chalk.white(`   1. Get a key at ${chalk.bold.cyan('https://scroll.tube/api-key')}`));
+      console.log(chalk.white(`   2. Set it in your .env: ${chalk.bold('SCROLLTUBE_KEY')}='scrolltube_key_****************' ${chalk.dim('(or FAL_KEY)')}\n`));
+
+      const choice = await prompt('Continue without AI features (local fallback)? [y/N]', 'n');
+
+      if (choice.toLowerCase() !== 'y') {
+        console.log(chalk.red('\nProcess aborted. Please set your API key and try again.\n'));
+        process.exit(1);
+      }
+
+      console.log(chalk.dim('\nFalling back to local processing (center-pinned, no depth)...\n'));
+
+      useTracking = false;
+      useDepth = false;
+    }
+
 
     const pipeline = new AssetPipeline({
-      apiKey: process.env.FAL_KEY,
+      apiKey: hasKey ? (stubeKey || falKey) : undefined,
       onProgress: (p: any) => {
         // You could add a progress bar here
       }
@@ -191,9 +227,10 @@ program
       console.log(chalk.bold.green(`\n✅ Project Created Successfully!`));
       console.log(chalk.white(`📍 Output: ${projectName}`));
       console.log(chalk.white(`📜 Config: scrolltube.json`));
-      console.log(chalk.cyan(`\nNext: Import the .json into your <ScrollTubeProvider />\n`));
+      console.log(chalk.cyan(`\nNext: Import the .json into your <ScrollTubeCanvas project={...} />\n`));
 
     } catch (err: any) {
+
       console.error(chalk.red(`\n❌ Error during pipeline: ${err.message}`));
       process.exit(1);
     }
@@ -222,7 +259,7 @@ program
 
     console.log(chalk.red('⚠️  UNDER CONSTRUCTION'));
     console.log(chalk.yellow('The "update" command is currently being refactored for the Universal Pipeline.'));
-    console.log(chalk.dim('Please use "scft create" to regenerate your project for now.\n'));
+    console.log(chalk.dim('Please use "scrolltube create" to regenerate your project for now.\n'));
 
     process.exit(0);
   });

@@ -1,0 +1,49 @@
+{
+  "version": "2.1.3",
+  "settings": {
+    "baseResolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "scrollMode": "vh"
+  },
+  "assets": [
+    {
+      "id": "main-sequence",
+      "strategy": "adaptive",
+      "variants": [
+        {
+          "id": "720p_l",
+          "media": "(orientation: landscape)",
+          "width": 1280,
+          "height": 720,
+          "orientation": "landscape",
+          "aspectRatio": "16:9",
+          "path": "./720p_l",
+          "frameCount": 782,
+          "hasDepthMap": true,
+          "subjects": [
+            "main"
+          ]
+        }
+      ]
+    }
+  ],
+  "timeline": {
+    "totalDuration": "300vh",
+    "scenes": [
+      {
+        "id": "scene-1",
+        "assetId": "main-sequence",
+        "startProgress": 0,
+        "duration": 1,
+        "assetRange": [
+          0,
+          781
+        ],
+        "layers": []
+      }
+    ]
+  },
+  "source": "./video-source.mp4"
+}

@@ -93,8 +93,8 @@ export class AssetPipeline {
       // Re-add at least one matching the source? No, let's let the user decide or use a safe fallback.
       // For now, let's use the source resolution as a single variant if everything else failed.
       const sourceVariant = {
-        id: 'source-res', 
-        width: sourceDimensions.width, 
+        id: 'source-res',
+        width: sourceDimensions.width,
         height: sourceDimensions.height,
         orientation: sourceDimensions.width > sourceDimensions.height ? 'landscape' : 'portrait' as any,
         aspectRatio: `${sourceDimensions.width}:${sourceDimensions.height}`,
