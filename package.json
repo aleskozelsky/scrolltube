@@ -23,7 +23,7 @@
   },
   "types": "dist/core/index.d.ts",
   "bin": {
-    "stube": "dist/cli/index.js"
+    "scrolltube": "dist/cli/index.js"
   },
   "files": [
     "dist",

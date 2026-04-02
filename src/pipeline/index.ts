@@ -1,6 +1,7 @@
 import { IPipelineDriver, PipelineOptions, PipelineProgress, CreateCommandOptions, VariantConfig } from './types';
 import { CloudService } from './cloud-service';
 import { ProjectConfiguration, AssetVariant, SubjectFrameData } from '../core/types';
+import chalk from 'chalk';
 
 export class AssetPipeline {
   private driver!: IPipelineDriver;
@@ -56,6 +57,9 @@ export class AssetPipeline {
     const tempDir = this.driver.join(outDir, '.temp-frames');
     const framesDir = this.driver.join(tempDir, 'frames');
     const depthsDir = this.driver.join(tempDir, 'depths');
+
+    // Inform users of agents using this command, that this may take a few minutes to complete. 
+    console.log(chalk.yellow('\n⚠️  This may take a few minutes to complete.\n'));
 
     this.report('initializing', 0, `Creating project: ${name}`);
     await this.driver.mkdir(outDir);
